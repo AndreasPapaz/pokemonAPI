@@ -18,5 +18,11 @@
   "bugs": {
     "url": "https://github.com/AndreasPapaz/pokemonAPI/issues"
   },
-  "homepage": "https://github.com/AndreasPapaz/pokemonAPI#readme"
+  "homepage": "https://github.com/AndreasPapaz/pokemonAPI#readme",
+  "devDependencies": {
+    "nodemon": "^1.12.0"
+  },
+  "dependencies": {
+    "express": "^4.15.4"
+  }
 }
