@@ -12,25 +12,25 @@ module.exports = function(app) {
 
 
 
-	app.get('/attack', function(req, res) {
-		if (pokemon === undefined || pokemon === null) {
-			res.send('please select a pokemon');
-			console.log('please select a pokemon');
-		} else {
-			for (var i = 0; i < pokemon.moves.length; i++) {
-				client.get(pokemon.moves[i], function(data, res) {
-					console.log(data.name);
-					console.log(data.power);
-					pokemon.moves2[data.name] = data.power;
-				});
-			}
-			console.log(pokemon);
-		}
-	});
+	// app.get('/attack', function(req, res) {
+	// 	if (pokemon === undefined || pokemon === null) {
+	// 		res.send('please select a pokemon');
+	// 		console.log('please select a pokemon');
+	// 	} else {
+	// 		for (var i = 0; i < pokemon.moves.length; i++) {
+	// 			client.get(pokemon.moves[i], function(data, res) {
+	// 				pokemon.moves2[data.name] = data.power;
+	// 			});
+	// 		}
+	// 		console.log(pokemon);
+	// 	}
+	// });
 
 
 
 	app.get('/overview/:id', function(req, res) {
+
+		//write a catch to make sure a number is passed from a range
 
 		var id = req.params.id;
 		console.log(id);
@@ -49,16 +49,20 @@ module.exports = function(app) {
 					data.moves[2].move.url,
 					data.moves[3].move.url
 				],
-				moves2: {}
+				attack: {}
 			};
 
 			console.log('this is the return');
-			console.log(pokemon);
+			// console.log(pokemon);
+			attack(pokemon);
 		});
 	});
 
 
 	app.get('/tests', function(req, res) {
+		if (pokemon === undefined || pokemon === null) {
+			res.redirect('/');
+		}
 		res.send(pokemon);
 	});
 
@@ -69,4 +73,28 @@ module.exports = function(app) {
 			console.log(data);
 		});
 	});
+
+
+	app.get("*", function(req, res) {
+		console.log('there lies pirates');
+	});
+
+
+
+	function attack(char) {
+		if (char !== undefined || char !== null) {
+			console.log("from the attack function");
+			for (var i = 0; i < char.moves.length; i++) {
+				client.get(char.moves[i], function(data, res) {
+					//this will prevent errors in battle
+					if (data.power !== null) {
+					char.attack[data.name] = data.power;
+					console.log(data.power);
+					}
+				});
+			}
+		}
+	}
+
+
 };
