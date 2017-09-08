@@ -83,18 +83,24 @@ module.exports = function(app) {
 
 	function attack(char) {
 		if (char !== undefined || char !== null) {
-			console.log("from the attack function");
+			// console.log("from the attack function");
 			for (var i = 0; i < char.moves.length; i++) {
 				client.get(char.moves[i], function(data, res) {
 					//this will prevent errors in battle
 					if (data.power !== null) {
 					char.attack[data.name] = data.power;
-					console.log(data.power);
 					}
 				});
 			}
+			display(char);
 		}
+		// display();
 	}
 
+	function display(x) {
+		console.log('hey', x);
+		var name = x.name;
+		console.log(name);
+	}
 
 };
