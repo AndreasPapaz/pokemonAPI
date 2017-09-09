@@ -26,6 +26,17 @@ module.exports = function(app) {
 	// 	}
 	// });
 
+	app.get('/attack/:id?', function(req, res) {
+		var id = req.params.id;
+
+		client.get('http://pokeapi.co/api/v2/move/' + id + '/', function(data, res) {
+
+			console.log(data);
+
+		});
+
+	});
+
 
 
 	app.get('/overview/:id', function(req, res) {
