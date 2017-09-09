@@ -2,6 +2,7 @@
 var Client = require('node-rest-client').Client;
 var client = new Client();
 var pokemon;
+var pokemon1;
 var pokemon2;
 
 module.exports = function(app) {
@@ -37,6 +38,52 @@ module.exports = function(app) {
 
 	});
 
+	app.get('/battle/:pokemon1/:pokemon2', function(req,res) {
+
+		var pokemonId1 = req.params.pokemon1;
+		var pokemonId2 = req.params.pokemon2;
+
+		client.get('http://pokeapi.co/api/v2/pokemon/' + pokemonId1 + '/', function(data, res) {
+
+			pokemon1 = {
+				name: data.name,
+				exp: data.base_experience,
+				hp: data.stats[data.stats.length - 1].base_stat,
+				weight: data.weight,
+				element: data.types[0].type.name,
+				moves: [
+					data.moves[0].move.url,
+					data.moves[1].move.url,
+					data.moves[2].move.url,
+					data.moves[3].move.url
+				],
+				attack: {}
+			};
+			attack(pokemon1);
+			checkForGame();
+		});
+
+		client.get('http://pokeapi.co/api/v2/pokemon/' + pokemonId2 + '/', function(data, res) {
+
+			pokemon2 = {
+				name: data.name,
+				exp: data.base_experience,
+				hp: data.stats[data.stats.length - 1].base_stat,
+				weight: data.weight,
+				element: data.types[0].type.name,
+				moves: [
+					data.moves[0].move.url,
+					data.moves[1].move.url,
+					data.moves[2].move.url,
+					data.moves[3].move.url
+				],
+				attack: {}
+			};
+			attack(pokemon2);
+			checkForGame();
+		});
+	});
+
 
 
 	app.get('/overview/:id', function(req, res) {
@@ -62,8 +109,6 @@ module.exports = function(app) {
 				],
 				attack: {}
 			};
-
-			console.log('this is the return');
 			// console.log(pokemon);
 			attack(pokemon);
 		});
@@ -79,15 +124,16 @@ module.exports = function(app) {
 
 
 
-	app.get('/all', function(req, res) {
-		client.get('http://pokeapi.co/api/v2/pokemon/?limit=251', function(data, res) {
-			console.log(data);
-		});
-	});
+	// app.get('/all', function(req, res) {
+	// 	client.get('http://pokeapi.co/api/v2/pokemon/?limit=251', function(data, res) {
+	// 		console.log(data);
+	// 	});
+	// });
 
 
 	app.get("*", function(req, res) {
-		console.log('there lies pirates');
+		console.log('No PokeMon found here....');
+		res.send('No PokeMon found here....');
 	});
 
 
@@ -105,13 +151,39 @@ module.exports = function(app) {
 			}
 			display(char);
 		}
-		// display();
 	}
 
 	function display(x) {
-		console.log('hey', x);
+		var hp = x.hp
 		var name = x.name;
 		console.log(name);
+		console.log(hp);
+	}
+
+	function checkForGame() {
+		if (pokemon1 && pokemon2) {
+			console.log('HEY THERE ARE 2 POKEMON');
+			battle(pokemon1, pokemon2);
+		}
+	}
+
+	function battle(x, y) {
+
+		var player1 = x;
+		var player2 = y;
+		var turn = 0;
+
+		while (player1.hp > 0 && player2.hp >0) {
+			if (turn === 0) {
+				console.log('player 1 turn');
+			}
+			if (turn === 1) {
+				console.log('player 2 turn');
+			}
+		}
+		console.log('PLAYER 1 HP');
+		console.log(player1.hp);
+
 	}
 
 };
