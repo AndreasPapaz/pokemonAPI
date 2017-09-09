@@ -158,6 +158,7 @@ module.exports = function(app) {
 		var name = x.name;
 		console.log(name);
 		console.log(hp);
+		console.log(x.attack);
 	}
 
 	function checkForGame() {
@@ -172,18 +173,17 @@ module.exports = function(app) {
 		var player1 = x;
 		var player2 = y;
 		var turn = 0;
+		//make a route or functio that will handle loading the attacks before the battle
+		console.log(player1);
 
-		while (player1.hp > 0 && player2.hp >0) {
-			if (turn === 0) {
-				console.log('player 1 turn');
-			}
-			if (turn === 1) {
-				console.log('player 2 turn');
-			}
-		}
-		console.log('PLAYER 1 HP');
-		console.log(player1.hp);
-
+		// while (player1.hp > 0 && player2.hp >0) {
+		// 	if (turn === 0) {
+		// 		player2.hp = player2.h1 - player1.attack
+		// 	}
+		// 	if (turn === 1) {
+		// 		console.log('player 2 turn');
+		// 	}
+		// }
 	}
 
 };
