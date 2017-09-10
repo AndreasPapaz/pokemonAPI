@@ -17,7 +17,6 @@ module.exports = function(app) {
 		var id = req.params.id;
 
 		client.get('http://pokeapi.co/api/v2/move/' + id + '/', function(data, res) {
-
 			console.log(data);
 		});
 
@@ -67,37 +66,39 @@ module.exports = function(app) {
 				attack: {}
 			};
 			attack(pokemon2).then(function(data) {
-				console.log('using the .then()');
-				// console.log(data);
 				checkForGame();
 			});
-			// checkForGame();
 		});
 	});
 
 
 	app.get('/overview/:id', function(req, res) {
 		//write a catch to make sure a number is passed from a range
+		if (isNaN(parseInt(req.params.id, 10))) {
+			console.log("please pass a number");
+			res.redirect('/');
+		}
+		console.log(typeof(req.params.id));
+		console.log(parseInt(req.params.id, 10));
 		var id = req.params.id;
-		console.log(id);
-		client.get('http://pokeapi.co/api/v2/pokemon/' + id + '/', function(data, res) {
-			pokemon = {
-				name: data.name,
-				exp: data.base_experience,
-				hp: data.stats[data.stats.length - 1].base_stat,
-				weight: data.weight,
-				element: data.types[0].type.name,
-				moves: [
-					data.moves[0].move.url,
-					data.moves[1].move.url,
-					data.moves[2].move.url,
-					data.moves[3].move.url
-				],
-				attack: {}
-			};
-			// console.log(pokemon);
-			attack(pokemon);
-		});
+		// client.get('http://pokeapi.co/api/v2/pokemon/' + id + '/', function(data, res) {
+		// 	pokemon = {
+		// 		name: data.name,
+		// 		exp: data.base_experience,
+		// 		hp: data.stats[data.stats.length - 1].base_stat,
+		// 		weight: data.weight,
+		// 		element: data.types[0].type.name,
+		// 		moves: [
+		// 			data.moves[0].move.url,
+		// 			data.moves[1].move.url,
+		// 			data.moves[2].move.url,
+		// 			data.moves[3].move.url
+		// 		],
+		// 		attack: {}
+		// 	};
+		// 	// console.log(pokemon);
+		// 	attack(pokemon);
+		// });
 	});
 
 
@@ -114,45 +115,7 @@ module.exports = function(app) {
 		res.send('No PokeMon found here....');
 	});
 
-
-	// function attack(char) {
-	// 	return new Promise(function(resolve, reject) {
-	// 		if (char !== undefined || char !== null) {
-	// 			for (var i = 0; i < char.moves.length; i++) {
-	// 				client.get(char.moves[i], function(data, res) {
-	// 					//this will prevent errors in battle
-	// 					if (data.power !== null) {
-	// 					char.attack[data.name] = data.power;
-	// 					}
-	// 				});
-	// 			}
-	// 			//I THINK I NEED TO WRITE ANOTHER FUNCTION TO CALL BACK WHEN THIS FOR LOOP IS COMPLETE
-	// 		resolve(char);
-	// 		// display(char);
-	// 		}
-	// 	});
-	// }
-
-	// function attack(char) {
-	// 	return new Promise(function(resolve, reject) {
-	// 		for (var i = 0; i <= char.moves.length; i++) {
-	// 			if (char.attack.length === char.moves.length) {
-	// 				resolve(char);
-	// 			} else {
-	// 				console.log(char.moves[i]);
-	// 				console.log(i);
-	// 				//handle async problem here
-	// 				client.get(char.moves[i], function(data, res) {
-	// 					if (data.power !== null) {
-	// 						console.log(data.name);
-	// 						char.attack[data.name] = data.power;
-	// 					}
-	// 				});
-	// 			}
-	// 		}
-	// 	});
-	// }
-
+	//Set Attack names and hit power to the pokemon Obj.
 	function attack(char) {
 		return new Promise(function(resolve, reject) {
 			var count = 0;
@@ -181,7 +144,7 @@ module.exports = function(app) {
 		console.log(x.attack);
 	}
 
-
+	//Middle man function that will start the Battle if two pokemon are loaded.
 	function checkForGame() {
 		if (pokemon1 && pokemon2) {
 			console.log('HEY THERE ARE 2 POKEMON');
