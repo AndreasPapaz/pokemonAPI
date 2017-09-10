@@ -7,11 +7,12 @@ var pokemon2;
 
 module.exports = function(app) {
 
+	//Home route
 	app.get('/', function(req, res) {
 		res.send('Welcome to the PokeMon API Routes!');
 	});
 
-
+	//Route for an attack information from a single ID
 	app.get('/attack/:id?', function(req, res) {
 		var id = req.params.id;
 
@@ -22,6 +23,7 @@ module.exports = function(app) {
 
 	});
 
+	//Route for battle of 2 pokemon based on ID's
 	app.get('/battle/:pokemon1/:pokemon2', function(req,res) {
 
 		var pokemonId1 = req.params.pokemon1;
@@ -43,9 +45,9 @@ module.exports = function(app) {
 				],
 				attack: {}
 			};
-			// attack(pokemon1).then(function(data) {
-			// 	checkForGame();
-			// });
+			attack(pokemon1).then(function(data) {
+				checkForGame();
+			});
 		});
 
 		client.get('http://pokeapi.co/api/v2/pokemon/' + pokemonId2 + '/', function(data, res) {
@@ -75,14 +77,10 @@ module.exports = function(app) {
 
 
 	app.get('/overview/:id', function(req, res) {
-
 		//write a catch to make sure a number is passed from a range
-
 		var id = req.params.id;
 		console.log(id);
-
 		client.get('http://pokeapi.co/api/v2/pokemon/' + id + '/', function(data, res) {
-
 			pokemon = {
 				name: data.name,
 				exp: data.base_experience,
@@ -196,11 +194,11 @@ module.exports = function(app) {
 		var player1 = x;
 		var player2 = y;
 		var turn = 0;
-		console.log("====================");
+		console.log("========================================");
 		console.log(x);
-		console.log("====================");
+		console.log("========================================");
 		console.log(y);
-		console.log("====================");
+		console.log("========================================");
 		// while (player1.hp > 0 && player2.hp >0) {
 		// 	if (turn === 0) {
 		// 		player2.hp = player2.h1 - player1.attack
