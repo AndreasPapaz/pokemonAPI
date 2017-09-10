@@ -73,32 +73,16 @@ module.exports = function(app) {
 
 
 	app.get('/overview/:id', function(req, res) {
-		//write a catch to make sure a number is passed from a range
+		//The ID must be a number
 		if (isNaN(parseInt(req.params.id, 10))) {
 			console.log("please pass a number");
 			res.redirect('/');
+		} else{
+			var id = req.params.id;
+			overView(id).then(function(data) {
+				console.log(data);
+			});
 		}
-		console.log(typeof(req.params.id));
-		console.log(parseInt(req.params.id, 10));
-		var id = req.params.id;
-		// client.get('http://pokeapi.co/api/v2/pokemon/' + id + '/', function(data, res) {
-		// 	pokemon = {
-		// 		name: data.name,
-		// 		exp: data.base_experience,
-		// 		hp: data.stats[data.stats.length - 1].base_stat,
-		// 		weight: data.weight,
-		// 		element: data.types[0].type.name,
-		// 		moves: [
-		// 			data.moves[0].move.url,
-		// 			data.moves[1].move.url,
-		// 			data.moves[2].move.url,
-		// 			data.moves[3].move.url
-		// 		],
-		// 		attack: {}
-		// 	};
-		// 	// console.log(pokemon);
-		// 	attack(pokemon);
-		// });
 	});
 
 
@@ -136,13 +120,43 @@ module.exports = function(app) {
 		});
 	}
 
-	function display(x) {
-		var hp = x.hp
-		var name = x.name;
-		console.log(name);
-		console.log(hp);
-		console.log(x.attack);
+	function overView(id) {
+		return new Promise(function(resolve, reject) {
+			client.get('http://pokeapi.co/api/v2/pokemon/' + id + '/', function(data, res) {
+				pokemon = {
+					name: data.name,
+					exp: data.base_experience,
+					hp: data.stats[data.stats.length - 1].base_stat,
+					weight: data.weight,
+					element: data.types[0].type.name,
+					moves: [
+						data.moves[0].move.url,
+						data.moves[1].move.url,
+						data.moves[2].move.url,
+						data.moves[3].move.url
+					],
+					attack: {}
+				};
+			});
+			resolve(pokemon);
+		});
 	}
+
+	function display(x) {
+		return new Promise(function(resolve, reject) {
+			var hp = x.hp;
+			var name = x.name;
+			resolve(name);
+		});
+	}
+
+	// function display(x) {
+	// 	var hp = x.hp
+	// 	var name = x.name;
+	// 	console.log(name);
+	// 	console.log(hp);
+	// 	console.log(x.attack);
+	// }
 
 	//Middle man function that will start the Battle if two pokemon are loaded.
 	function checkForGame() {
