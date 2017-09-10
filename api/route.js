@@ -12,28 +12,12 @@ module.exports = function(app) {
 	});
 
 
-
-	// app.get('/attack', function(req, res) {
-	// 	if (pokemon === undefined || pokemon === null) {
-	// 		res.send('please select a pokemon');
-	// 		console.log('please select a pokemon');
-	// 	} else {
-	// 		for (var i = 0; i < pokemon.moves.length; i++) {
-	// 			client.get(pokemon.moves[i], function(data, res) {
-	// 				pokemon.moves2[data.name] = data.power;
-	// 			});
-	// 		}
-	// 		console.log(pokemon);
-	// 	}
-	// });
-
 	app.get('/attack/:id?', function(req, res) {
 		var id = req.params.id;
 
 		client.get('http://pokeapi.co/api/v2/move/' + id + '/', function(data, res) {
 
 			console.log(data);
-
 		});
 
 	});
@@ -59,8 +43,9 @@ module.exports = function(app) {
 				],
 				attack: {}
 			};
-			attack(pokemon1);
-			checkForGame();
+			// attack(pokemon1).then(function(data) {
+			// 	checkForGame();
+			// });
 		});
 
 		client.get('http://pokeapi.co/api/v2/pokemon/' + pokemonId2 + '/', function(data, res) {
@@ -79,11 +64,14 @@ module.exports = function(app) {
 				],
 				attack: {}
 			};
-			attack(pokemon2);
-			checkForGame();
+			attack(pokemon2).then(function(data) {
+				console.log('using the .then()');
+				// console.log(data);
+				checkForGame();
+			});
+			// checkForGame();
 		});
 	});
-
 
 
 	app.get('/overview/:id', function(req, res) {
@@ -123,34 +111,72 @@ module.exports = function(app) {
 	});
 
 
-
-	// app.get('/all', function(req, res) {
-	// 	client.get('http://pokeapi.co/api/v2/pokemon/?limit=251', function(data, res) {
-	// 		console.log(data);
-	// 	});
-	// });
-
-
 	app.get("*", function(req, res) {
 		console.log('No PokeMon found here....');
 		res.send('No PokeMon found here....');
 	});
 
 
+	// function attack(char) {
+	// 	return new Promise(function(resolve, reject) {
+	// 		if (char !== undefined || char !== null) {
+	// 			for (var i = 0; i < char.moves.length; i++) {
+	// 				client.get(char.moves[i], function(data, res) {
+	// 					//this will prevent errors in battle
+	// 					if (data.power !== null) {
+	// 					char.attack[data.name] = data.power;
+	// 					}
+	// 				});
+	// 			}
+	// 			//I THINK I NEED TO WRITE ANOTHER FUNCTION TO CALL BACK WHEN THIS FOR LOOP IS COMPLETE
+	// 		resolve(char);
+	// 		// display(char);
+	// 		}
+	// 	});
+	// }
+
+	// function attack(char) {
+	// 	return new Promise(function(resolve, reject) {
+	// 		for (var i = 0; i <= char.moves.length; i++) {
+	// 			if (char.attack.length === char.moves.length) {
+	// 				resolve(char);
+	// 			} else {
+	// 				console.log(char.moves[i]);
+	// 				console.log(i);
+	// 				//handle async problem here
+	// 				client.get(char.moves[i], function(data, res) {
+	// 					if (data.power !== null) {
+	// 						console.log(data.name);
+	// 						char.attack[data.name] = data.power;
+	// 					}
+	// 				});
+	// 			}
+	// 		}
+	// 	});
+	// }
 
 	function attack(char) {
-		if (char !== undefined || char !== null) {
-			// console.log("from the attack function");
-			for (var i = 0; i < char.moves.length; i++) {
-				client.get(char.moves[i], function(data, res) {
-					//this will prevent errors in battle
-					if (data.power !== null) {
-					char.attack[data.name] = data.power;
-					}
-				});
+		return new Promise(function(resolve, reject) {
+			var count = 0;
+			for (var i = 0; i <= char.moves.length; i++) {
+				console.log('This is your ', i);
+				if (count === char.moves.length) {
+					resolve(char);
+				} else {
+					console.log(char.moves[i]);
+					console.log(i);
+					client.get(char.moves[i], function(data, res) {
+						if (data.power !== null) {
+							console.log(data.name);
+							console.log(char.moves.length);
+							count++;
+							console.log(count)
+							char.attack[data.name] = data.power;
+						}
+					});
+				}
 			}
-			display(char);
-		}
+		});
 	}
 
 	function display(x) {
@@ -160,6 +186,7 @@ module.exports = function(app) {
 		console.log(hp);
 		console.log(x.attack);
 	}
+
 
 	function checkForGame() {
 		if (pokemon1 && pokemon2) {
@@ -173,9 +200,11 @@ module.exports = function(app) {
 		var player1 = x;
 		var player2 = y;
 		var turn = 0;
-		//make a route or functio that will handle loading the attacks before the battle
-		console.log(player1);
-
+		console.log("====================");
+		console.log(x);
+		console.log("====================");
+		console.log(y);
+		console.log("====================");
 		// while (player1.hp > 0 && player2.hp >0) {
 		// 	if (turn === 0) {
 		// 		player2.hp = player2.h1 - player1.attack
@@ -185,5 +214,7 @@ module.exports = function(app) {
 		// 	}
 		// }
 	}
+
+
 
 };
