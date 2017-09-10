@@ -158,23 +158,19 @@ module.exports = function(app) {
 	function attack(char) {
 		return new Promise(function(resolve, reject) {
 			var count = 0;
-			for (var i = 0; i <= char.moves.length; i++) {
-				console.log('This is your ', i);
-				if (count === char.moves.length) {
-					resolve(char);
-				} else {
-					console.log(char.moves[i]);
-					console.log(i);
-					client.get(char.moves[i], function(data, res) {
-						if (data.power !== null) {
-							console.log(data.name);
-							console.log(char.moves.length);
-							count++;
-							console.log(count)
-							char.attack[data.name] = data.power;
+			for (var i = 0; i < char.moves.length; i++) {
+				client.get(char.moves[i], function(data, res) {
+					if (data.power !== null) {
+						console.log(data.name);
+						console.log(char.moves.length);
+						count++;
+						console.log(count)
+						char.attack[data.name] = data.power;
+						if (count === char.moves.length) {
+							resolve(char);
 						}
-					});
-				}
+					}
+				});
 			}
 		});
 	}
