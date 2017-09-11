@@ -74,14 +74,16 @@ module.exports = function(app) {
 
 	app.get('/overview/:id', function(req, res) {
 		//The ID must be a number
-		if (isNaN(parseInt(req.params.id, 10))) {
-			console.log("please pass a number");
-			res.redirect('/');
-		} else{
+		if (parseInt(req.params.id, 10)) {
 			var id = req.params.id;
 			overView(id).then(function(data) {
+				console.log('data from the overview');
+				// res.json({message: 'hey whats up'});
 				console.log(data);
+				res.json({overview: data});
 			});
+		} else{
+			console.log('please pass a num');
 		}
 	});
 
@@ -128,14 +130,7 @@ module.exports = function(app) {
 					exp: data.base_experience,
 					hp: data.stats[data.stats.length - 1].base_stat,
 					weight: data.weight,
-					element: data.types[0].type.name,
-					moves: [
-						data.moves[0].move.url,
-						data.moves[1].move.url,
-						data.moves[2].move.url,
-						data.moves[3].move.url
-					],
-					attack: {}
+					element: data.types[0].type.name
 				};
 			});
 			resolve(pokemon);
