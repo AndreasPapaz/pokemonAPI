@@ -12,27 +12,7 @@ Using Node.js and Express, this api will give you: a quick over view of a Pokemo
 | body-parser     | https://www.npmjs.com/package/body-parser-json |
 | node-rest-client| https://www.npmjs.com/package/node-rest-client |
 
-### Blogs of Engineers involved in the driver
-- Christian Kvalheim [@christkv](https://twitter.com/christkv) <http://christiankvalheim.com>
-
-### Bugs / Feature Requests
-
-Think you’ve found a bug? Want to see a new feature in node-mongodb-native? Please open a
-case in our issue management tool, JIRA:
-
-- Create an account and login <https://jira.mongodb.org>.
-- Navigate to the NODE project <https://jira.mongodb.org/browse/NODE>.
-- Click **Create Issue** - Please provide as much information as possible about the issue type and how to reproduce it.
-
-Bug reports in JIRA for all driver projects (i.e. NODE, PYTHON, CSHARP, JAVA) and the
-Core Server (i.e. SERVER) project are **public**.
-
-### Questions and Bug Reports
-
- * mailing list: https://groups.google.com/forum/#!forum/node-mongodb-native
- * jira: http://jira.mongodb.org/
-
-### Change Log
+### PokeMon Quick API
 
 http://jira.mongodb.org/browse/NODE
 
