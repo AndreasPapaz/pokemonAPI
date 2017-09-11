@@ -144,6 +144,7 @@ module.exports = function(app) {
 		});
 	};
 
+	//Sets the Pokemon Attack name and hit power.
 	function attackView(id) {
 		return new Promise(function(resolve, reject) {
 			client.get('https://pokeapi.co/api/v2/move/' + id + '/', function(data, res) {
@@ -165,43 +166,36 @@ module.exports = function(app) {
 		});
 	};
 
-	// function display(x) {
-	// 	var hp = x.hp
-	// 	var name = x.name;
-	// 	console.log(name);
-	// 	console.log(hp);
-	// 	console.log(x.attack);
-	// }
 
 	//Middle man function that will start the Battle if two pokemon are loaded.
 	function checkForGame(pokemon) {
-		// var pokeAtt1 = pokemon1.attack;
-		// var pokeAtt2 = pokemon2.attack;
-		// if (Object.keys(pokeAtt1).length > 0 && Object.keys(pokeAtt2).length > 0) {
-		// 	console.log('HEY THERE ARE 2 POKEMON');
-		// 	battle(pokemon1, pokemon2);
-		// } else {
-		// 	console.log("You Need 2 Pokemon");
-		// }
-		console.log("==========");
-		console.log(pokemon1);
-		console.log(pokemon2);
-		console.log("==========");
+		if (pokemon1 && pokemon2) {
+			console.log("Start Match!");
+			battle(pokemon1, pokemon2);
+		} else {
+			console.log("Waiting on Players");
+		}
 	};
 
 	function battle(x, y) {
 
 		var player1 = x;
 		var player2 = y;
+
+		var attack1 = Object.keys(x.attack);
+		var attack2 = Object.keys(y.attack);
+
 		var turn = 0;
-		console.log("========================================");
-		console.log(x.attack);
-		console.log("========================================");
-		console.log(y.attack);
-		console.log("========================================");
+		console.log(attack1);
+		console.log(player1.attack[attack1[Math.floor(Math.random() * attack1.length)]]);
+		// console.log("========================================");
+		// console.log(x.attack);
+		// console.log("========================================");
+		// console.log(y.attack);
+		// console.log("========================================");
 		// while (player1.hp > 0 && player2.hp >0) {
 		// 	if (turn === 0) {
-		// 		player2.hp = player2.h1 - player1.attack
+		// 		player2.hp = player2.hp - player1.attack[attack1[Math.floor(Math.random() * attack1.length)]];
 		// 	}
 		// 	if (turn === 1) {
 		// 		console.log('player 2 turn');
