@@ -1,7 +1,6 @@
 // var request = require('request');
 var Client = require('node-rest-client').Client;
 var client = new Client();
-var pokemon;
 var pokemon1;
 var pokemon2;
 
@@ -38,7 +37,7 @@ module.exports = function(app) {
 
 		client.get('http://pokeapi.co/api/v2/pokemon/' + pokemonId1 + '/', function(data, res) {
 
-			pokemon1 = {
+			pokemonSet1 = {
 				name: data.name,
 				exp: data.base_experience,
 				hp: data.stats[data.stats.length - 1].base_stat,
@@ -52,14 +51,16 @@ module.exports = function(app) {
 				],
 				attack: {}
 			};
-			attackSet(pokemon1).then(function(data) {
+			attackSet(pokemonSet1).then(function(data) {
+				console.log("first pokemon loaded");
+				pokemon1 = data;
 				checkForGame();
 			});
 		});
 
 		client.get('http://pokeapi.co/api/v2/pokemon/' + pokemonId2 + '/', function(data, res) {
 
-			pokemon2 = {
+			pokemonSet2 = {
 				name: data.name,
 				exp: data.base_experience,
 				hp: data.stats[data.stats.length - 1].base_stat,
@@ -73,7 +74,9 @@ module.exports = function(app) {
 				],
 				attack: {}
 			};
-			attackSet(pokemon2).then(function(data) {
+			attackSet(pokemonSet2).then(function(data) {
+				console.log("second pokemon loaded");
+				pokemon2 = data;
 				checkForGame();
 			});
 		});
@@ -115,10 +118,7 @@ module.exports = function(app) {
 			for (var i = 0; i < char.moves.length; i++) {
 				client.get(char.moves[i], function(data, res) {
 					if (data.power !== null) {
-						console.log(data.name);
-						console.log(char.moves.length);
 						count++;
-						console.log(count)
 						char.attack[data.name] = data.power;
 						if (count === char.moves.length) {
 							resolve(char);
@@ -174,11 +174,19 @@ module.exports = function(app) {
 	// }
 
 	//Middle man function that will start the Battle if two pokemon are loaded.
-	function checkForGame() {
-		if (pokemon1 && pokemon2) {
-			console.log('HEY THERE ARE 2 POKEMON');
-			battle(pokemon1, pokemon2);
-		}
+	function checkForGame(pokemon) {
+		// var pokeAtt1 = pokemon1.attack;
+		// var pokeAtt2 = pokemon2.attack;
+		// if (Object.keys(pokeAtt1).length > 0 && Object.keys(pokeAtt2).length > 0) {
+		// 	console.log('HEY THERE ARE 2 POKEMON');
+		// 	battle(pokemon1, pokemon2);
+		// } else {
+		// 	console.log("You Need 2 Pokemon");
+		// }
+		console.log("==========");
+		console.log(pokemon1);
+		console.log(pokemon2);
+		console.log("==========");
 	};
 
 	function battle(x, y) {
@@ -187,9 +195,9 @@ module.exports = function(app) {
 		var player2 = y;
 		var turn = 0;
 		console.log("========================================");
-		console.log(x);
+		console.log(x.attack);
 		console.log("========================================");
-		console.log(y);
+		console.log(y.attack);
 		console.log("========================================");
 		// while (player1.hp > 0 && player2.hp >0) {
 		// 	if (turn === 0) {
