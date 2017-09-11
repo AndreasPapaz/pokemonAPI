@@ -9,17 +9,25 @@ module.exports = function(app) {
 
 	//Home route
 	app.get('/', function(req, res) {
-		res.send('Welcome to the PokeMon API Routes!');
+		// res.send('Welcome to the PokeMon API Routes!');
+		res.write('WelCome to My PokeMon API!' + '\n');
+		res.write('This is a test');
+		res.end();
 	});
 
 	//Route for an attack information from a single ID
-	app.get('/attack/:id?', function(req, res) {
-		var id = req.params.id;
+	app.get('/attack/:id', function(req, res) {
 
-		client.get('http://pokeapi.co/api/v2/move/' + id + '/', function(data, res) {
-			console.log(data);
-		});
+		var id = parseInt(req.params.id);
 
+		if (isNaN(id) === false) {
+			attackView(id).then(function(data) {
+				res.json({attack: data});
+			});
+		} else {
+			console.log("please pass a number");
+			res.redirect('/');
+		}
 	});
 
 	//Route for battle of 2 pokemon based on ID's
@@ -44,7 +52,7 @@ module.exports = function(app) {
 				],
 				attack: {}
 			};
-			attack(pokemon1).then(function(data) {
+			attackSet(pokemon1).then(function(data) {
 				checkForGame();
 			});
 		});
@@ -65,7 +73,7 @@ module.exports = function(app) {
 				],
 				attack: {}
 			};
-			attack(pokemon2).then(function(data) {
+			attackSet(pokemon2).then(function(data) {
 				checkForGame();
 			});
 		});
@@ -74,16 +82,15 @@ module.exports = function(app) {
 
 	app.get('/overview/:id', function(req, res) {
 		//The ID must be a number
-		if (parseInt(req.params.id, 10)) {
-			var id = req.params.id;
+		var id = parseInt(req.params.id);
+
+		if (isNaN(id) === false) {
 			overView(id).then(function(data) {
-				console.log('data from the overview');
-				// res.json({message: 'hey whats up'});
-				console.log(data);
 				res.json({overview: data});
 			});
-		} else{
-			console.log('please pass a num');
+		} else {
+			console.log("please pass a number");
+			res.redirect('/');
 		}
 	});
 
@@ -102,7 +109,7 @@ module.exports = function(app) {
 	});
 
 	//Set Attack names and hit power to the pokemon Obj.
-	function attack(char) {
+	function attackSet(char) {
 		return new Promise(function(resolve, reject) {
 			var count = 0;
 			for (var i = 0; i < char.moves.length; i++) {
@@ -120,7 +127,7 @@ module.exports = function(app) {
 				});
 			}
 		});
-	}
+	};
 
 	function overView(id) {
 		return new Promise(function(resolve, reject) {
@@ -132,10 +139,23 @@ module.exports = function(app) {
 					weight: data.weight,
 					element: data.types[0].type.name
 				};
+				resolve(pokemon);
 			});
-			resolve(pokemon);
 		});
-	}
+	};
+
+	function attackView(id) {
+		return new Promise(function(resolve, reject) {
+			client.get('https://pokeapi.co/api/v2/move/' + id + '/', function(data, res) {
+				attack = {
+					attack_name: data.name,
+					power: data.power,
+					accuracy: data.accuracy
+				};
+				resolve(attack);
+			});
+		});
+	};
 
 	function display(x) {
 		return new Promise(function(resolve, reject) {
@@ -143,7 +163,7 @@ module.exports = function(app) {
 			var name = x.name;
 			resolve(name);
 		});
-	}
+	};
 
 	// function display(x) {
 	// 	var hp = x.hp
@@ -159,7 +179,7 @@ module.exports = function(app) {
 			console.log('HEY THERE ARE 2 POKEMON');
 			battle(pokemon1, pokemon2);
 		}
-	}
+	};
 
 	function battle(x, y) {
 
@@ -179,7 +199,7 @@ module.exports = function(app) {
 		// 		console.log('player 2 turn');
 		// 	}
 		// }
-	}
+	};
 
 
 
