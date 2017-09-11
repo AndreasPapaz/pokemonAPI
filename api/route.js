@@ -178,6 +178,7 @@ module.exports = function(app) {
 	};
 
 	function battle(x, y) {
+		var history = [];
 
 		var player1 = x;
 		var player2 = y;
@@ -186,16 +187,23 @@ module.exports = function(app) {
 		var attack2 = Object.keys(y.attack);
 
 		var turn = 0;
-		console.log(attack1);
-		console.log(player1.attack[attack1[Math.floor(Math.random() * attack1.length)]]);
-		// console.log("========================================");
-		// console.log(x.attack);
-		// console.log("========================================");
-		// console.log(y.attack);
-		// console.log("========================================");
+
+		var tempAttack = attack1[Math.floor(Math.random() * attack1.length)];
+				var tempHit = player1.attack[tempAttack];
+				console.log(player2.hp);
+				player2.hp = player2.hp - tempHit;
+				console.log(player2.hp);
+		history.push("pokemon : " + player1.name + " used " + tempAttack + " at " + player1.attack[tempAttack] + " power" );
+				console.log(history);
+
 		// while (player1.hp > 0 && player2.hp >0) {
 		// 	if (turn === 0) {
-		// 		player2.hp = player2.hp - player1.attack[attack1[Math.floor(Math.random() * attack1.length)]];
+		// 		//i have to do a random number first then log;
+		// 		var tempAttack = attack1[Math.floor(Math.random() * attack1.length)];
+		// 		var tempHit = player1.attack[tempAttack];
+		// 		player2.hp = player2.hp - tempHit;
+		// 		history.push("pokemon : ", player1.name, "used ", tempAttack, "at ", player1.attack[tempAttack], " power" );
+		// 		console.log(history);
 		// 	}
 		// 	if (turn === 1) {
 		// 		console.log('player 2 turn');
