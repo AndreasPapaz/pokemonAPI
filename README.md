@@ -110,84 +110,15 @@ server.connect();
 To connect to a replicaset we would use the `ReplSet` class and for a set of Mongos proxies we use the `Mongos` class. Each topology class offer the same CRUD operations and you operate on the topology directly. Let's look at an example exercising all the different available CRUD operations.
 
 ```js
-var Server = require('mongodb-core').Server
-  , assert = require('assert');
+API Routes
 
-// Set up server connection
-var server = new Server({
-    host: 'localhost'
-  , port: 27017
-  , reconnect: true
-  , reconnectInterval: 50
-});
+/overview/:id //Will send JSON format of a PokeMon. the :id must be a number, If it is not, it will throw you back to the Home Route.
 
-// Add event listeners
-server.on('connect', function(_server) {
-  console.log('connected');
+/attack/:id? //WWill send JSON format of an Attack. the :id must be a number, If it is not, it will throw you back to the Home Route.
 
-  // Execute the ismaster command
-  _server.command('system.$cmd', {ismaster: true}, function(err, result) {
+/battle/:pokemon1/:pokemon2 //Will send JSON format of the battle history of 2 pokemon and the Winner. There are 2 parameters (1: pokemon1, 2: pokemon2) Both pokemon must use an id number.
 
-    // Perform a document insert
-    _server.insert('myproject.inserts1', [{a:1}, {a:2}], {
-      writeConcern: {w:1}, ordered:true
-    }, function(err, results) {
-      assert.equal(null, err);
-      assert.equal(2, results.result.n);      
-
-      // Perform a document update
-      _server.update('myproject.inserts1', [{
-        q: {a: 1}, u: {'$set': {b:1}}
-      }], {
-        writeConcern: {w:1}, ordered:true
-      }, function(err, results) {
-        assert.equal(null, err);
-        assert.equal(1, results.result.n);
-
-        // Remove a document
-        _server.remove('myproject.inserts1', [{
-          q: {a: 1}, limit: 1
-        }], {
-          writeConcern: {w:1}, ordered:true
-        }, function(err, results) {
-          assert.equal(null, err);
-          assert.equal(1, results.result.n);
-
-          // Get a document
-          var cursor = _server.cursor('integration_tests.inserts_example4', {
-              find: 'integration_tests.example4'
-            , query: {a:1}
-          });
-
-          // Get the first document
-          cursor.next(function(err, doc) {
-            assert.equal(null, err);
-            assert.equal(2, doc.a);
-
-            // Execute the ismaster command
-            _server.command("system.$cmd"
-              , {ismaster: true}, function(err, result) {
-                assert.equal(null, err)
-                _server.destroy();              
-            });
-          });
-      });
-    });
-
-    test.done();
-  });
-});
-
-server.on('close', function() {
-  console.log('closed');
-});
-
-server.on('reconnect', function() {
-  console.log('reconnect');
-});
-
-// Start connection
-server.connect();
+All Other Routes will respond in No PokeMon Found Here....
 ```
 
 The core driver does not contain any helpers or abstractions only the core crud operations. These consist of the following commands.
