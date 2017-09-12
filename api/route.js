@@ -16,7 +16,7 @@ module.exports = function(app) {
 		res.write('Here are the route options' + '\n');
 		res.write('==========================' + '\n');
 		res.write('' + '\n');
-		res.write('1) /overview/:id  (id MUST be a number)' + '\n');
+		res.write('1) /overview/:id  (id MUST be a number below 365)' + '\n');
 		res.write('[overview] will return a pokemon as an Object' + '\n');
 		res.write('' + '\n');
 		res.write('' + '\n');
@@ -31,6 +31,10 @@ module.exports = function(app) {
 
 	//Route for an attack information from a single ID
 	app.get('/attack/:id', function(req, res) {
+		if (req.params.id > 622) {
+			res.redirect('/');
+		}
+
 		var id = parseInt(req.params.id);
 
 		if (isNaN(id) === false) {
@@ -45,7 +49,9 @@ module.exports = function(app) {
 
 	//Route for battle of 2 pokemon based on ID's
 	app.get('/battle/:pokemon1/:pokemon2', function(req, res) {
-
+		if (req.params.pokemon1 > 365 || req.params.pokemon2 > 365) {
+			res.redirect('/');
+		}
 		var pokemonId1 = req.params.pokemon1;
 		var pokemonId2 = req.params.pokemon2;
 		if (isNaN(pokemonId1) === false && isNaN(pokemonId2) === false) {
@@ -83,6 +89,9 @@ module.exports = function(app) {
 
 	app.get('/overview/:id', function(req, res) {
 		//The ID must be a number
+		if (req.params.id > 365) {
+			res.redirect('/noPokemon');
+		}
 		var id = parseInt(req.params.id);
 		if (isNaN(id) === false) {
 			overView(id).then(function(data) {

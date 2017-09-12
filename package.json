@@ -1,29 +1,24 @@
 {
   "name": "pokemonapi",
   "version": "1.0.0",
-  "description": "pokemon api routes",
+  "description": "Using Node.js and Express, this api will give you: a quick over view of a Pokemon, a quick over view of an Attack, and a battle over view of 2 selected PokeMon.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AndreasPapaz/pokemonAPI.git"
   },
-  "keywords": [
-    "API"
-  ],
   "author": "AP",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/AndreasPapaz/pokemonAPI/issues"
   },
   "homepage": "https://github.com/AndreasPapaz/pokemonAPI#readme",
-  "devDependencies": {
-    "nodemon": "^1.12.0"
-  },
   "dependencies": {
     "express": "^4.15.4",
-    "node-rest-client": "^3.1.0",
+    "node-rest-client": "^3.1.0"
   }
 }
