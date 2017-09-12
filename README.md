@@ -21,8 +21,9 @@ http://jira.mongodb.org/browse/NODE
 The quick start guide will show you how to set up a simple application using Core driver and MongoDB. It scope is only how to set up the driver and perform the simple crud operations. For more inn depth coverage we encourage reading the tutorials.
 
 ## Screenshots
-Sign Up Page
-![Image of Homepage- Sign Up](http://i.imgur.com/OGse89k.jpg?1)
+
+Over View Route
+![Image of Over View Route- Over View](https://i.imgur.com/m54iU96.png)
 
 Returning User Log-In Page
 ![Image of Homepage-User Log-In](http://i.imgur.com/LbuEmab.jpg)
