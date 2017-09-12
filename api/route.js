@@ -206,7 +206,7 @@ module.exports = function(app) {
 				if (attack1.length !== 0 && attack2.length !== 0) {
 					var turn = 0;
 
-					history.push('PokeMon #1 : ' + player1.name + ' with hp : ' + player2.hp + ' PokeMon #2 : ' + player2.name + ' with hp : ' + player2.hp);
+					history.push('PokeMon #1 : ' + player1.name + ' with hp : ' + player1.hp + ' PokeMon #2 : ' + player2.name + ' with hp : ' + player2.hp);
 
 					console.log(attack1);
 					console.log(attack2);
