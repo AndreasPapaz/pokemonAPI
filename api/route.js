@@ -10,7 +10,22 @@ module.exports = function(app) {
 	app.get('/', function(req, res) {
 		// res.send('Welcome to the PokeMon API Routes!');
 		res.write('WelCome to My PokeMon API!' + '\n');
-		res.write('This is a test');
+		res.write('' + '\n');
+		res.write('==========================' + '\n');
+		res.write('' + '\n');
+		res.write('Here are the route options' + '\n');
+		res.write('==========================' + '\n');
+		res.write('' + '\n');
+		res.write('1) /overview/:id  (id MUST be a number)' + '\n');
+		res.write('[overview] will return a pokemon as an Object' + '\n');
+		res.write('' + '\n');
+		res.write('' + '\n');
+		res.write('2) /attack/:id  (id MUST be a number)' + '\n');
+		res.write('[attack] will return an attack as an Object' + '\n');
+		res.write('' + '\n');
+		res.write('' + '\n');
+		res.write('3) /battle/:pokemon1/:pokemon2  (pokemon1 & pokemon2 MUST be numbers & both parameters need to be fulfilled)' + '\n');
+		res.write('[battle]will return the summary of 2 pokemon battling as an Object' + '\n');
 		res.end();
 	});
 
@@ -35,9 +50,11 @@ module.exports = function(app) {
 		var pokemonId2 = req.params.pokemon2;
 		if (isNaN(pokemonId1) === false && isNaN(pokemonId2) === false) {
 
+			//Find pokemon and set object
 			pokeMonSet(pokemonId1).then(function(data) {
 				console.log('first');
 				pokemon1 = data;
+				//Set attacks and power hits to the object
 				attackSet(pokemon1).then(function(data1) {
 					battle(data1.attack).then(function(summary) {
 						// console.log(summary);
@@ -46,9 +63,11 @@ module.exports = function(app) {
 				});
 			});
 
+			//Find pokemon and set object
 			pokeMonSet(pokemonId2).then(function(data) {
 				console.log('second');
 				pokemon2 = data;
+				//Set attacks and power hits to the object
 				attackSet(pokemon2).then(function(data2) {
 					battle(data2.attack).then(function(summary) {
 						// console.log(summary);
@@ -67,7 +86,6 @@ module.exports = function(app) {
 	app.get('/overview/:id', function(req, res) {
 		//The ID must be a number
 		var id = parseInt(req.params.id);
-
 		if (isNaN(id) === false) {
 			overView(id).then(function(data) {
 				res.json({overview: data});
@@ -78,40 +96,17 @@ module.exports = function(app) {
 		}
 	});
 
-
-	app.get('/tests', function(req, res) {
-		if (pokemon === undefined || pokemon === null) {
-			res.redirect('/');
-		}
-		res.send(pokemon);
-	});
-
-
+	// all other routes will pass here
 	app.get("*", function(req, res) {
 		console.log('No PokeMon found here....');
 		res.send('No PokeMon found here....');
 	});
 
-	//Set Attack names and hit power to the pokemon Obj.
-	function attackSet(char) {
-		return new Promise(function(resolve, reject) {
-			var count = 0;
 
-			for (var i = 0; i < char.moves.length; i++) {
-				client.get(char.moves[i], function(data, res) {
-					// the last load is null so it stops here
-					if (data.power !== null) {
-						char.attack[data.name] = data.power;
-						count++;
-						if (count === char.moves.length) {
-							resolve(char);
-						}
-					}
-				});
-			}
-		});
-	};
+	// functions to manage data
+	//======================================================
 
+	//Find a single PokeMon Over view.
 	function overView(id) {
 		return new Promise(function(resolve, reject) {
 			client.get('http://pokeapi.co/api/v2/pokemon/' + id + '/', function(data, res) {
@@ -127,7 +122,7 @@ module.exports = function(app) {
 		});
 	};
 
-	//Sets the Pokemon Attack name and hit power.
+	//Find a single attack
 	function attackView(id) {
 		return new Promise(function(resolve, reject) {
 			client.get('https://pokeapi.co/api/v2/move/' + id + '/', function(data, res) {
@@ -141,14 +136,7 @@ module.exports = function(app) {
 		});
 	};
 
-	function display(x) {
-		return new Promise(function(resolve, reject) {
-			var hp = x.hp;
-			var name = x.name;
-			resolve(name);
-		});
-	};
-
+	//Set pokemon for battle. Promise is returned
 	function pokeMonSet(idNum) {
 		return new Promise(function(resolve, reject) {
 			client.get('http://pokeapi.co/api/v2/pokemon/' + idNum + '/', function(data, res) {
@@ -173,6 +161,27 @@ module.exports = function(app) {
 		});
 	}
 
+	//Set Attack names and hit power to the pokemon Obj.
+	function attackSet(char) {
+		return new Promise(function(resolve, reject) {
+			var count = 0;
+
+			for (var i = 0; i < char.moves.length; i++) {
+				client.get(char.moves[i], function(data, res) {
+					// the last load is null so it stops here
+					if (data.power !== null) {
+						char.attack[data.name] = data.power;
+						count++;
+						if (count === char.moves.length) {
+							resolve(char);
+						}
+					}
+				});
+			}
+		});
+	};
+
+	//once 2 pokemon are set in this global script the function will fully run.
 	function battle(attack) {
 		return new Promise(function(resolve, reject) {
 
