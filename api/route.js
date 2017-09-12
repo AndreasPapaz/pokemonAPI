@@ -16,7 +16,6 @@ module.exports = function(app) {
 
 	//Route for an attack information from a single ID
 	app.get('/attack/:id', function(req, res) {
-
 		var id = parseInt(req.params.id);
 
 		if (isNaN(id) === false) {
@@ -30,82 +29,40 @@ module.exports = function(app) {
 	});
 
 	//Route for battle of 2 pokemon based on ID's
-	app.get('/battle/:pokemon1/:pokemon2', function(req,res) {
+	app.get('/battle/:pokemon1/:pokemon2', function(req, res) {
 
 		var pokemonId1 = req.params.pokemon1;
 		var pokemonId2 = req.params.pokemon2;
-		console.log(pokemonId1);
-		console.log(pokemonId2);
+		if (isNaN(pokemonId1) === false && isNaN(pokemonId2) === false) {
 
-		client.get('http://pokeapi.co/api/v2/pokemon/' + pokemonId1 + '/', function(data, res) {
-
-			pokemonSet1 = {
-				name: data.name,
-				exp: data.base_experience,
-				hp: data.stats[data.stats.length - 1].base_stat,
-				weight: data.weight,
-				element: data.types[0].type.name,
-				moves: [
-					data.moves[0].move.url,
-					data.moves[1].move.url,
-					data.moves[2].move.url,
-					data.moves[3].move.url
-				],
-				attack: {}
-			};
-			attackSet(pokemonSet1).then(function(data) {
-				console.log("first pokemon loaded");
+			pokeMonSet(pokemonId1).then(function(data) {
+				console.log('first');
 				pokemon1 = data;
-				console.log(pokemonId2);
-				client.get('http://pokeapi.co/api/v2/pokemon/' + pokemonId2 + '/', function(data, res) {
-
-				pokemonSet2 = {
-					name: data.name,
-					exp: data.base_experience,
-					hp: data.stats[data.stats.length - 1].base_stat,
-					weight: data.weight,
-					element: data.types[0].type.name,
-					moves: [
-						data.moves[0].move.url,
-						data.moves[1].move.url,
-						data.moves[2].move.url,
-						data.moves[3].move.url
-					],
-					attack: {}
-				};
-					attackSet(pokemonSet2).then(function(data) {
-						console.log("second pokemon loaded");
-						pokemon2 = data;
-						checkForGame();
+				attackSet(pokemon1).then(function(data1) {
+					battle(data1.attack).then(function(summary) {
+						// console.log(summary);
+						res.json({tests: summary});
 					});
 				});
 			});
-		});
 
-		// client.get('http://pokeapi.co/api/v2/pokemon/' + pokemonId2 + '/', function(data, res) {
+			pokeMonSet(pokemonId2).then(function(data) {
+				console.log('second');
+				pokemon2 = data;
+				attackSet(pokemon2).then(function(data2) {
+					battle(data2.attack).then(function(summary) {
+						// console.log(summary);
+						res.json({tests: summary});
+					});
+				});
+			});
 
-		// 	pokemonSet2 = {
-		// 		name: data.name,
-		// 		exp: data.base_experience,
-		// 		hp: data.stats[data.stats.length - 1].base_stat,
-		// 		weight: data.weight,
-		// 		element: data.types[0].type.name,
-		// 		moves: [
-		// 			data.moves[0].move.url,
-		// 			data.moves[1].move.url,
-		// 			data.moves[2].move.url,
-		// 			data.moves[3].move.url
-		// 		],
-		// 		attack: {}
-		// 	};
-		// 	attackSet(pokemonSet2).then(function(data) {
-		// 		console.log("second pokemon loaded");
-		// 		pokemon2 = data;
-		// 		checkForGame();
-		// 	});
-		// });
+		} else {
+			res.redirect('/');
+			console.log('you need 2 id numbers');
+		}
+
 	});
-
 
 	app.get('/overview/:id', function(req, res) {
 		//The ID must be a number
@@ -137,21 +94,19 @@ module.exports = function(app) {
 
 	//Set Attack names and hit power to the pokemon Obj.
 	function attackSet(char) {
-		console.log(char);
 		return new Promise(function(resolve, reject) {
 			var count = 0;
+
 			for (var i = 0; i < char.moves.length; i++) {
 				client.get(char.moves[i], function(data, res) {
-					console.log(data.power);
-					console.log(data.name);
 					// the last load is null so it stops here
 					if (data.power !== null) {
-						count++;
 						char.attack[data.name] = data.power;
+						count++;
 						if (count === char.moves.length) {
 							resolve(char);
 						}
-					} 
+					}
 				});
 			}
 		});
@@ -194,52 +149,96 @@ module.exports = function(app) {
 		});
 	};
 
+	function pokeMonSet(idNum) {
+		return new Promise(function(resolve, reject) {
+			client.get('http://pokeapi.co/api/v2/pokemon/' + idNum + '/', function(data, res) {
 
-	//Middle man function that will start the Battle if two pokemon are loaded.
-	function checkForGame(pokemon) {
-		if (pokemon1 && pokemon2) {
-			console.log("Start Match!");
-			battle(pokemon1, pokemon2);
-		}
-	};
+				pokemonSet = {
+					name: data.name,
+					exp: data.base_experience,
+					hp: data.stats[data.stats.length - 1].base_stat,
+					weight: data.weight,
+					element: data.types[0].type.name,
+					moves: [
+						data.moves[0].move.url,
+						data.moves[1].move.url,
+						data.moves[2].move.url,
+						data.moves[3].move.url
+					],
+					attack: {}
+				};
 
-	function battle(x, y) {
-		var history = [];
+				resolve(pokemonSet);
+			});
+		});
+	}
 
-		var player1 = x;
-		var player2 = y;
-
-		var attack1 = Object.keys(x.attack);
-		var attack2 = Object.keys(y.attack);
-
-		var turn = 0;
-
-		history.push('PokeMon #1 : ' + player1.name + ' with hp : ' + player2.hp + ' PokeMon #2 : ' + player2.name + ' with hp : ' + player2.hp);
+	function battle(attack) {
+		return new Promise(function(resolve, reject) {
 
 
-		while (player1.hp > 0 && player2.hp >0) {
-			if (turn === 0) {
-				var tempAttack = attack1[Math.floor(Math.random() * attack1.length)];
-				var tempHit = player1.attack[tempAttack] * .10;
-				player2.hp = player2.hp - tempHit;
-				history.push(player1.name + " used " + tempAttack + " at " + player1.attack[tempAttack] + " power." );
-				history.push(player2.name + ' hp is now ' + player2.hp);
-				turn = 1;
+			if (pokemon1 && pokemon2) {
+				var history = [];
+				var sumHistory = {};
+
+				var player1 = pokemon1;
+				var player2 = pokemon2;
+
+				var attack1 = Object.keys(pokemon1.attack);
+				var attack2 = Object.keys(pokemon2.attack);
+
+				if (attack1.length !== 0 && attack2.length !== 0) {
+					var turn = 0;
+
+					history.push('PokeMon #1 : ' + player1.name + ' with hp : ' + player2.hp + ' PokeMon #2 : ' + player2.name + ' with hp : ' + player2.hp);
+
+					console.log(attack1);
+					console.log(attack2);
+					while (player1.hp >= 0 && player2.hp >= 0) {
+						if (turn === 0) {
+							var tempAttack = attack1[Math.floor(Math.random() * attack1.length)];
+							var tempHit = player1.attack[tempAttack] * .10;
+							if (tempAttack !== undefined) {
+								player2.hp = player2.hp - tempHit;
+								history.push(player1.name + " used " + tempAttack + " at " + player1.attack[tempAttack] + " power." );
+								history.push(player2.name + ' hp is now ' + player2.hp);
+								turn = 1;
+							} else {
+								history.push(player1.name + ' has missed');
+							}
+							turn = 1;
+						}
+						if (turn === 1) {
+							var tempAttack = attack2[Math.floor(Math.random() * attack2.length)];
+							var tempHit = player2.attack[tempAttack] * .10;
+							if (tempAttack !== undefined) {
+								player1.hp = player1.hp - tempHit;
+								history.push(player2.name + " used " + tempAttack + " at " + tempHit + " power." );
+								history.push(player1.name + ' hp is now ' + player1.hp);
+							} else {
+								history.push(player2.name + ' has missed');
+							}
+							turn = 0;
+						}
+					}
+
+					if (player1.hp > player2.hp) {
+						history.push('The WINNER : ' + player1.name);
+					} else {
+						history.push('The WINNER : ' + player2.name);
+					}
+
+					for (var i = 0; i < history.length; i++) {
+						sumHistory[i + 1] = history[i];
+					}
+
+					pokemon1 = undefined;
+					pokemon2 = undefined;
+
+					resolve(sumHistory);
+					console.log("END ++++++ END");
+				}
 			}
-			if (turn === 1) {
-				var tempAttack = attack2[Math.floor(Math.random() * attack2.length)];
-				var tempHit = player2.attack[tempAttack] * .10;
-				player1.hp = player1.hp - tempHit;
-				history.push(player2.name + " used " + tempAttack, " at " + tempHit + " power." );
-				history.push(player1.name + ' hp is now ' + player1.hp);
-				turn = 0;
-			}
-		}
-		pokemon1;
-		pokemon2;
-		console.log(history);
+		});
 	};
-
-
-
 };
