@@ -16,7 +16,7 @@ Attack Route
 ![Image of Over View Route- Over View](https://i.imgur.com/ZL4kga4.png)
 
 Battle Route
-![Image of Over View Route- Over View](https://i.imgur.com/5TPyOXE.png)
+![Image of Over View Route- Over View](https://i.imgur.com/FlBSq8X.png)
 
 
 
