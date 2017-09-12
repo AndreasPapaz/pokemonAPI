@@ -20,7 +20,7 @@ module.exports = function(app) {
 		res.write('[overview] will return a pokemon as an Object' + '\n');
 		res.write('' + '\n');
 		res.write('' + '\n');
-		res.write('2) /attack/:id  (id MUST be a number)' + '\n');
+		res.write('2) /attack/:id  (id MUST be a number below 622)' + '\n');
 		res.write('[attack] will return an attack as an Object' + '\n');
 		res.write('' + '\n');
 		res.write('' + '\n');
