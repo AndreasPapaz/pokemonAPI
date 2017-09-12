@@ -57,8 +57,7 @@ module.exports = function(app) {
 				//Set attacks and power hits to the object
 				attackSet(pokemon1).then(function(data1) {
 					battle(data1.attack).then(function(summary) {
-						// console.log(summary);
-						res.json({tests: summary});
+						res.json({battle_summary: summary});
 					});
 				});
 			});
@@ -70,8 +69,7 @@ module.exports = function(app) {
 				//Set attacks and power hits to the object
 				attackSet(pokemon2).then(function(data2) {
 					battle(data2.attack).then(function(summary) {
-						// console.log(summary);
-						res.json({tests: summary});
+						res.json({battle_summary: summary});
 					});
 				});
 			});
