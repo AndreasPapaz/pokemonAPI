@@ -216,7 +216,7 @@ module.exports = function(app) {
 							var tempHit = player1.attack[tempAttack] * .10;
 							if (tempAttack !== undefined) {
 								player2.hp = player2.hp - tempHit;
-								history.push(player1.name + " used " + tempAttack + " at " + player1.attack[tempAttack] + " power." );
+								history.push(player1.name + " used " + tempAttack + " at " + tempHit + " hit power." );
 								history.push(player2.name + ' hp is now ' + player2.hp);
 								turn = 1;
 							} else {
@@ -229,7 +229,7 @@ module.exports = function(app) {
 							var tempHit = player2.attack[tempAttack] * .10;
 							if (tempAttack !== undefined) {
 								player1.hp = player1.hp - tempHit;
-								history.push(player2.name + " used " + tempAttack + " at " + tempHit + " power." );
+								history.push(player2.name + " used " + tempAttack + " at " + tempHit + " hit power." );
 								history.push(player1.name + ' hp is now ' + player1.hp);
 							} else {
 								history.push(player2.name + ' has missed');
