@@ -251,7 +251,7 @@ module.exports = function(app) {
 					//pokemon1 = undefined;
 					//pokemon2 = undefined;
 					pokemon1;
-					pokemon2};
+					pokemon2;
 
 					resolve(sumHistory);
 					console.log("END ++++++ END");
